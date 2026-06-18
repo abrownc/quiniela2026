@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -407,6 +407,27 @@ Only include confirmed final scores.`}]
   },0);
   const myRank=leaderboard.findIndex(p=>p.name===player.name)+1;
 
+  // Refs for scrolling to current day
+  const dateRefs = useRef({});
+  const compareRefs = useRef({});
+
+  // Scroll helper: try today, then next date, else last
+  function scrollToDateMap(refMap, keys){
+    if(!keys||keys.length===0) return;
+    const target = keys.find(d=>d===today) || keys.find(d=>d>today) || keys[keys.length-1];
+    const el = refMap.current && refMap.current[target];
+    if(el && typeof el.scrollIntoView === 'function') setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);
+  }
+
+  // When tab changes or dates update, scroll to current day for matches/compare
+  useEffect(()=>{
+    if(tab==="matches") scrollToDateMap(dateRefs, dates);
+    if(tab==="compare"){
+      const compareDates = Object.keys(compareRefs.current).sort();
+      scrollToDateMap(compareRefs, compareDates);
+    }
+  },[tab,dates,finishedMatchesSorted]);
+
   // Group matches by date and sort by datetime
   const matchesByDate={};
   MATCHES.forEach(m=>{
@@ -484,7 +505,7 @@ Only include confirmed final scores.`}]
               const isToday=date===today;
               const isPast=date<today;
               return(
-                <div key={date} style={{marginBottom:12}}>
+                <div key={date} ref={el=>dateRefs.current[date]=el} style={{marginBottom:12}}>
                   {/* Date header */}
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,padding:"0 2px"}}>
                     <span style={{fontSize:11,fontWeight:700,color:isToday?"#3fb950":isPast?"#484f58":"#e6edf3"}}>{dayLabel}{isToday?" · Hoy":""}</span>
@@ -570,7 +591,7 @@ Only include confirmed final scores.`}]
             <div style={{fontSize:10,color:"#8b949e",marginBottom:12}}>
               Pronósticos por partido — solo partidos terminados. Tu nombre en azul.
             </div>
-            {finishedMatchesSorted.map(m=>{
+            {finishedMatchesSorted.map((m,i)=>{
               const actual=actuals[m.id];
               const playerPreds=allPlayers.map(p=>{
                 const pred=allPredictions.find(pr=>pr.player_id===p.id&&pr.match_id===m.id);
@@ -579,7 +600,7 @@ Only include confirmed final scores.`}]
               }).filter(pp=>pp.pred);
               if(playerPreds.length===0)return null;
               return(
-                <div key={m.id} style={{background:"#161b22",borderRadius:8,padding:"10px 12px",marginBottom:8,border:"1px solid #21262d"}}>
+                <div key={m.id} ref={el=>{ if(i===0||finishedMatchesSorted[i-1].date!==m.date) compareRefs.current[m.date]=el }} style={{background:"#161b22",borderRadius:8,padding:"10px 12px",marginBottom:8,border:"1px solid #21262d"}}>
                   <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
                     <span style={{fontSize:9,color:"#8b949e"}}>Grupo {m.g} · {m.label}</span>
                     <span style={{fontSize:10,color:"#3fb950",fontWeight:700}}>{actual.home_goals}–{actual.away_goals}</span>
