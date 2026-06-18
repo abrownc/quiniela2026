@@ -419,15 +419,6 @@ Only include confirmed final scores.`}]
     if(el && typeof el.scrollIntoView === 'function') setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);
   }
 
-  // When tab changes or dates update, scroll to current day for matches/compare
-  useEffect(()=>{
-    if(tab==="matches") scrollToDateMap(dateRefs, dates);
-    if(tab==="compare"){
-      const compareDates = Object.keys(compareRefs.current).sort();
-      scrollToDateMap(compareRefs, compareDates);
-    }
-  },[tab,dates,finishedMatchesSorted]);
-
   // Group matches by date and sort by datetime
   const matchesByDate={};
   MATCHES.forEach(m=>{
@@ -443,6 +434,16 @@ Only include confirmed final scores.`}]
   const finishedMatchesSorted=[...MATCHES]
     .filter(m=>actuals[m.id])
     .sort((a,b)=>getMatchStart(a) - getMatchStart(b));
+
+  // When tab changes or dates update, scroll to current day for matches/compare
+  // (moved below so `dates` and `finishedMatchesSorted` are defined)
+  useEffect(()=>{
+    if(tab==="matches") scrollToDateMap(dateRefs, dates);
+    if(tab==="compare"){
+      const compareDates = Object.keys(compareRefs.current).sort();
+      scrollToDateMap(compareRefs, compareDates);
+    }
+  },[tab,dates,finishedMatchesSorted]);
 
   const tabs=[
     {id:"matches",label:"⚽ Partidos"},
