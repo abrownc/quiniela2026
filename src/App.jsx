@@ -354,13 +354,18 @@ Only include confirmed final scores.`}]
   },0);
   const myRank=leaderboard.findIndex(p=>p.name===player.name)+1;
 
-  // Group matches by date
+  // Group matches by date and sort by datetime
   const matchesByDate={};
   MATCHES.forEach(m=>{
     if(!matchesByDate[m.date])matchesByDate[m.date]=[];
     matchesByDate[m.date].push(m);
   });
-  const dates=Object.keys(matchesByDate).sort();
+  // Sort matches within each date by their datetime
+  Object.keys(matchesByDate).forEach(d=>{
+    matchesByDate[d].sort((a,b)=>getMatchStart(a) - getMatchStart(b));
+  });
+  // Sort dates by the first match datetime for each date
+  const dates=Object.keys(matchesByDate).sort((a,b)=>getMatchStart(matchesByDate[a][0]) - getMatchStart(matchesByDate[b][0]));
 
   const tabs=[
     {id:"matches",label:"⚽ Partidos"},
