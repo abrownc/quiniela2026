@@ -123,7 +123,7 @@ function calcExtrasScore(extras, officialExtras) {
 }
   const d=new Date(new Date().toLocaleString("en-US",{timeZone:"America/Chicago"}));
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-}
+
 
 function calcScore(hp,ap,ha,aa){
   if(hp==null||ap==null||ha==null||aa==null) return null;
