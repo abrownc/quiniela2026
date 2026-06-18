@@ -454,7 +454,7 @@ Only include confirmed final scores.`}]
   ];
 
   return(
-    <div style={{background:"#0d1117",minHeight:"100vh",fontFamily:"'Inter',-apple-system,sans-serif",color:"#e6edf3",maxWidth:640,margin:"0 auto"}}>
+    <div style={{background:"#0d1117",height:"100vh",display:"flex",flexDirection:"column",fontFamily:"'Inter',-apple-system,sans-serif",color:"#e6edf3",maxWidth:640,margin:"0 auto"}}>
       {/* Header */}
       <div style={{background:"#161b22",borderBottom:"1px solid #21262d",padding:"12px 16px 10px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -483,21 +483,23 @@ Only include confirmed final scores.`}]
         ))}
       </div>
 
-      <div style={{padding:"12px 12px 80px"}}>
+      {/* Mini legend (kept visible with header when on matches tab) */}
+      {tab==="matches"&&(
+        <div style={{display:"flex",gap:8,margin:"8px 12px",flexWrap:"wrap",fontSize:10,color:"#8b949e"}}>
+          <span>Puntos:</span>
+          {[0,1,2,3].map(p=>{
+            const c={0:{bg:"#3d1515",co:"#f85149"},1:{bg:"#2d2000",co:"#d29922"},2:{bg:"#0d2137",co:"#388bfd"},3:{bg:"#0d2b1d",co:"#3fb950"}}[p];
+            const l={0:"Incorrecto",1:"Ganador",2:"+diferencia",3:"Exacto"}[p];
+            return<span key={p} style={{display:"flex",alignItems:"center",gap:3}}><span style={{background:c.bg,color:c.co,fontWeight:800,fontSize:9,padding:"1px 5px",borderRadius:10}}>{p===0?"0":`+${p}`}</span>{l}</span>;
+          })}
+        </div>
+      )}
+
+      <div style={{flex:1,overflowY:"auto",padding:"12px 12px 80px"}}>
 
         {/* ── PARTIDOS ── */}
         {tab==="matches"&&(
           <div>
-            {/* Mini legend */}
-            <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",fontSize:10,color:"#8b949e"}}>
-              <span>Puntos:</span>
-              {[0,1,2,3].map(p=>{
-                const c={0:{bg:"#3d1515",co:"#f85149"},1:{bg:"#2d2000",co:"#d29922"},2:{bg:"#0d2137",co:"#388bfd"},3:{bg:"#0d2b1d",co:"#3fb950"}}[p];
-                const l={0:"Incorrecto",1:"Ganador",2:"+diferencia",3:"Exacto"}[p];
-                return<span key={p} style={{display:"flex",alignItems:"center",gap:3}}><span style={{background:c.bg,color:c.co,fontWeight:800,fontSize:9,padding:"1px 5px",borderRadius:10}}>{p===0?"0":`+${p}`}</span>{l}</span>;
-              })}
-            </div>
-
             {loading?(
               <div style={{textAlign:"center",color:"#8b949e",padding:40}}>Cargando...</div>
             ):dates.map(date=>{
