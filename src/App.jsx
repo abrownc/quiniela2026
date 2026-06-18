@@ -123,6 +123,15 @@ function getMatchStart(match){
   return new Date(new Date(match.date).toLocaleString("en-US",{timeZone:"America/Chicago"}));
 }
 
+function formatMatchStart(match){
+  const d = getMatchStart(match);
+  try{
+    return d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Chicago'}).replace(',', '');
+  }catch{
+    return d.toISOString();
+  }
+}
+
 function calcScore(hp,ap,ha,aa){
   if(hp==null||ap==null||ha==null||aa==null) return null;
   const pw=hp>ap?"H":hp<ap?"A":"D",aw=ha>aa?"H":ha<aa?"A":"D";
@@ -163,6 +172,7 @@ function MatchRow({match,pred,actual,onSave}){
     <div style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderBottom:"1px solid #1a1f2e",background:locked&&!actual?"transparent":"transparent"}}>
       {/* Group badge */}
       <span style={{fontSize:9,color:"#484f58",fontWeight:700,width:16,textAlign:"center",flexShrink:0}}>{match.g}</span>
+      <span style={{color:"#8b949e",fontSize:11,width:110,flexShrink:0,textAlign:"left"}}>{formatMatchStart(match)}</span>
       {/* Home team */}
       <span style={{flex:1,textAlign:"right",fontSize:12,fontWeight:600,color:locked?"#484f58":"#e6edf3",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{match.home}</span>
       {/* Score inputs */}
@@ -545,6 +555,7 @@ Only include confirmed final scores.`}]
               return(
                 <div key={m.id} style={{display:"flex",alignItems:"center",gap:6,borderBottom:"1px solid #21262d",padding:"7px 0"}}>
                   <span style={{color:"#484f58",fontSize:9,width:16}}>{m.g}</span>
+                  <span style={{color:"#8b949e",fontSize:11,width:110,flexShrink:0,textAlign:"left"}}>{formatMatchStart(m)}</span>
                   <span style={{flex:1,color:"#e6edf3",fontSize:10}}>{m.home} vs {m.away}</span>
                   <span style={{color:"#484f58",fontSize:9,width:32}}>{m.label}</span>
                   <input type="number" min={0} max={20} placeholder="—" key={`h_${m.id}_${a.home_goals}`} defaultValue={a.home_goals??""}
