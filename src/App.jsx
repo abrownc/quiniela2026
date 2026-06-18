@@ -231,7 +231,7 @@ function PtsBadge({pts}){
 
 // Compact match row
 function MatchRow({match,pred,actual,onSave}){
-  const now=getNowCT();
+  const now=new Date();
   const locked=!!actual || getMatchStart(match) <= now;
   const [h,setH]=useState(pred?.home_goals??"");
   const [a,setA]=useState(pred?.away_goals??"");
