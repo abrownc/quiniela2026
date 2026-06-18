@@ -34,8 +34,28 @@ const KNOWN_RESULTS = {
   h1:{home_goals:0,away_goals:0}, h2:{home_goals:1,away_goals:1},
 };
 
-// Solo partidos Jun 17 en adelante — lo que el usuario puede pronosticar
+// Partidos (incluye fases anteriores)
 const MATCHES = [
+  // Jun 11 - Jun 16 (added historical matches)
+  {id:"a1",g:"A",home:"México",        away:"Sudáfrica",      date:"2026-06-11",datetime:"2026-06-11T14:00:00-05:00",label:"Jun 11"},
+  {id:"a2",g:"A",home:"Corea del Sur", away:"Rep. Checa",     date:"2026-06-11",datetime:"2026-06-11T21:00:00-05:00",label:"Jun 11"},
+  {id:"b1",g:"B",home:"Canadá",        away:"Bosnia-Herz.",  date:"2026-06-12",datetime:"2026-06-12T14:00:00-05:00",label:"Jun 12"},
+  {id:"d1",g:"D",home:"EUA",           away:"Paraguay",       date:"2026-06-12",datetime:"2026-06-12T20:00:00-05:00",label:"Jun 12"},
+  {id:"c1",g:"C",home:"Haití",         away:"Escocia",        date:"2026-06-13",datetime:"2026-06-13T20:00:00-05:00",label:"Jun 13"},
+  {id:"d2",g:"D",home:"Australia",     away:"Turquía",       date:"2026-06-13",datetime:"2026-06-13T23:00:00-05:00",label:"Jun 13"},
+  {id:"c2",g:"C",home:"Brasil",        away:"Marruecos",      date:"2026-06-13",datetime:"2026-06-13T17:00:00-05:00",label:"Jun 13"},
+  {id:"b2",g:"B",home:"Catar",         away:"Suiza",          date:"2026-06-13",datetime:"2026-06-13T14:00:00-05:00",label:"Jun 13"},
+  {id:"e1",g:"E",home:"Costa de Marfil",away:"Ecuador",       date:"2026-06-14",datetime:"2026-06-14T18:00:00-05:00",label:"Jun 14"},
+  {id:"e2",g:"E",home:"Alemania",      away:"Curazao",        date:"2026-06-14",datetime:"2026-06-14T12:00:00-05:00",label:"Jun 14"},
+  {id:"f1",g:"F",home:"Países Bajos",  away:"Japón",          date:"2026-06-14",datetime:"2026-06-14T15:00:00-05:00",label:"Jun 14"},
+  {id:"f2",g:"F",home:"Suecia",        away:"Túnez",          date:"2026-06-14",datetime:"2026-06-14T21:00:00-05:00",label:"Jun 14"},
+  {id:"h1",g:"H",home:"Arabia Saudita",away:"Uruguay",        date:"2026-06-15",datetime:"2026-06-15T17:00:00-05:00",label:"Jun 15"},
+  {id:"h2",g:"H",home:"España",        away:"Cabo Verde",     date:"2026-06-15",datetime:"2026-06-15T11:00:00-05:00",label:"Jun 15"},
+  {id:"g1",g:"G",home:"Irán",          away:"Nueva Zelanda",  date:"2026-06-15",datetime:"2026-06-15T20:00:00-05:00",label:"Jun 15"},
+  {id:"g2",g:"G",home:"Bélgica",       away:"Egipto",         date:"2026-06-15",datetime:"2026-06-15T14:00:00-05:00",label:"Jun 15"},
+  {id:"i1",g:"I",home:"Francia",       away:"Senegal",        date:"2026-06-16",datetime:"2026-06-16T14:00:00-05:00",label:"Jun 16"},
+  {id:"i2",g:"I",home:"Iraq",          away:"Noruega",        date:"2026-06-16",datetime:"2026-06-16T17:00:00-05:00",label:"Jun 16"},
+  {id:"j1",g:"J",home:"Argentina",     away:"Argelia",        date:"2026-06-16",datetime:"2026-06-16T20:00:00-05:00",label:"Jun 16"},
   // Jun 17
   {id:"k1",g:"K",home:"Portugal",      away:"DR Congo",       date:"2026-06-17",datetime:"2026-06-17T12:00:00-05:00",label:"Jun 17",md:1},
   {id:"k2",g:"K",home:"Uzbekistán",    away:"Colombia",       date:"2026-06-17",datetime:"2026-06-17T21:00:00-05:00",label:"Jun 17",md:1},
