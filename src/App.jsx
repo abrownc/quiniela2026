@@ -102,6 +102,59 @@ const MATCHES = [
   {id:"l6",g:"L",home:"Croacia",       away:"Panamá",         date:"2026-06-27",datetime:"2026-06-27T16:00:00-05:00",label:"Jun 27",md:3},
 ];
 
+// Knockout stages
+// Round of 32 (m73 - m88)
+MATCHES.push(
+  {id:"m73",g:"R32",home:"Runner-up Group A",away:"Runner-up Group B",date:"2026-06-28",datetime:"2026-06-28T14:00:00-05:00",label:"Jun 28"},
+  {id:"m74",g:"R32",home:"Winner Group E",away:"3rd place (A/B/C/D/F)",date:"2026-06-29",datetime:"2026-06-29T15:30:00-05:00",label:"Jun 29"},
+  {id:"m75",g:"R32",home:"Winner Group F",away:"Runner-up Group C",date:"2026-06-29",datetime:"2026-06-29T22:00:00-05:00",label:"Jun 29"},
+  {id:"m76",g:"R32",home:"Winner Group C",away:"Runner-up Group F",date:"2026-06-29",datetime:"2026-06-29T12:00:00-05:00",label:"Jun 29"},
+  {id:"m77",g:"R32",home:"Winner Group I",away:"3rd place (C/D/F/G/H)",date:"2026-06-30",datetime:"2026-06-30T16:00:00-05:00",label:"Jun 30"},
+  {id:"m78",g:"R32",home:"Runner-up Group E",away:"Runner-up Group I",date:"2026-06-30",datetime:"2026-06-30T12:00:00-05:00",label:"Jun 30"},
+  {id:"m79",g:"R32",home:"Winner Group A",away:"3rd place (C/E/F/H/I)",date:"2026-06-30",datetime:"2026-06-30T22:00:00-05:00",label:"Jun 30"},
+  {id:"m80",g:"R32",home:"Winner Group L",away:"3rd place (E/H/I/J/K)",date:"2026-07-01",datetime:"2026-07-01T11:00:00-05:00",label:"Jul 01"},
+  {id:"m81",g:"R32",home:"Winner Group D",away:"3rd place (B/E/F/I/J)",date:"2026-07-01",datetime:"2026-07-01T19:00:00-05:00",label:"Jul 01"},
+  {id:"m82",g:"R32",home:"Winner Group G",away:"3rd place (A/E/H/I/J)",date:"2026-07-01",datetime:"2026-07-01T15:00:00-05:00",label:"Jul 01"},
+  {id:"m83",g:"R32",home:"Runner-up Group K",away:"Runner-up Group L",date:"2026-07-02",datetime:"2026-07-02T18:00:00-05:00",label:"Jul 02"},
+  {id:"m84",g:"R32",home:"Winner Group H",away:"Runner-up Group J",date:"2026-07-02",datetime:"2026-07-02T14:00:00-05:00",label:"Jul 02"},
+  {id:"m85",g:"R32",home:"Winner Group B",away:"3rd place (E/F/G/I/J)",date:"2026-07-02",datetime:"2026-07-02T22:00:00-05:00",label:"Jul 02"},
+  {id:"m86",g:"R32",home:"Winner Group J",away:"Runner-up Group H",date:"2026-07-03",datetime:"2026-07-03T17:00:00-05:00",label:"Jul 03"},
+  {id:"m87",g:"R32",home:"Winner Group K",away:"3rd place (D/E/I/J/L)",date:"2026-07-03",datetime:"2026-07-03T20:30:00-05:00",label:"Jul 03"},
+  {id:"m88",g:"R32",home:"Runner-up Group D",away:"Runner-up Group G",date:"2026-07-03",datetime:"2026-07-03T13:00:00-05:00",label:"Jul 03"}
+);
+
+// Round of 16 (m89 - m96)
+MATCHES.push(
+  {id:"m89",g:"R16",home:"Winner of M74",away:"Winner of M77",date:"2026-07-04",datetime:"2026-07-04T16:00:00-05:00",label:"Jul 04"},
+  {id:"m90",g:"R16",home:"Winner of M73",away:"Winner of M75",date:"2026-07-04",datetime:"2026-07-04T12:00:00-05:00",label:"Jul 04"},
+  {id:"m91",g:"R16",home:"Winner of M76",away:"Winner of M78",date:"2026-07-05",datetime:"2026-07-05T15:00:00-05:00",label:"Jul 05"},
+  {id:"m92",g:"R16",home:"Winner of M79",away:"Winner of M80",date:"2026-07-05",datetime:"2026-07-05T21:00:00-05:00",label:"Jul 05"},
+  {id:"m93",g:"R16",home:"Winner of M83",away:"Winner of M84",date:"2026-07-06",datetime:"2026-07-06T14:00:00-05:00",label:"Jul 06"},
+  {id:"m94",g:"R16",home:"Winner of M81",away:"Winner of M82",date:"2026-07-06",datetime:"2026-07-06T19:00:00-05:00",label:"Jul 06"},
+  {id:"m95",g:"R16",home:"Winner of M86",away:"Winner of M88",date:"2026-07-07",datetime:"2026-07-07T11:00:00-05:00",label:"Jul 07"},
+  {id:"m96",g:"R16",home:"Winner of M85",away:"Winner of M87",date:"2026-07-07",datetime:"2026-07-07T15:00:00-05:00",label:"Jul 07"}
+);
+
+// Quarter-finals (m97 - m100)
+MATCHES.push(
+  {id:"m97",g:"QF",home:"Winner of M89",away:"Winner of M90",date:"2026-07-09",datetime:"2026-07-09T15:00:00-05:00",label:"Jul 09"},
+  {id:"m98",g:"QF",home:"Winner of M93",away:"Winner of M94",date:"2026-07-10",datetime:"2026-07-10T14:00:00-05:00",label:"Jul 10"},
+  {id:"m99",g:"QF",home:"Winner of M91",away:"Winner of M92",date:"2026-07-11",datetime:"2026-07-11T16:00:00-05:00",label:"Jul 11"},
+  {id:"m100",g:"QF",home:"Winner of M95",away:"Winner of M96",date:"2026-07-11",datetime:"2026-07-11T20:00:00-05:00",label:"Jul 11"}
+);
+
+// Semi-finals (m101 - m102)
+MATCHES.push(
+  {id:"m101",g:"SF",home:"Winner of M97",away:"Winner of M98",date:"2026-07-14",datetime:"2026-07-14T14:00:00-05:00",label:"Jul 14"},
+  {id:"m102",g:"SF",home:"Winner of M99",away:"Winner of M100",date:"2026-07-15",datetime:"2026-07-15T14:00:00-05:00",label:"Jul 15"}
+);
+
+// Third-place (m103) and Final (m104)
+MATCHES.push(
+  {id:"m103",g:"3P",home:"Loser of M101",away:"Loser of M102",date:"2026-07-18",datetime:"2026-07-18T16:00:00-05:00",label:"Jul 18"},
+  {id:"m104",g:"F",home:"Winner of M101",away:"Winner of M102",date:"2026-07-19",datetime:"2026-07-19T14:00:00-05:00",label:"Jul 19"}
+);
+
 const ALL_TEAMS=[...new Set(Object.values(GROUPS).flat())].sort();
 const TOP_SCORERS=["K. Mbappé (FRA)","L. Messi (ARG)","E. Haaland (NOR)","H. Kane (ENG)","Vinicius Jr. (BRA)","J. Bellingham (ENG)","L. Martínez (MEX)","C. Ronaldo (POR)","M. Salah (EGY)","A. Dávila (MEX)","O. Giménez (MEX)","L. Werner (GER)","A. Mitoma (JPN)","V. Osimhen (NGA)"];
 const MEXICO_ROUNDS=["Fase de Grupos","Ronda de 32","Octavos de Final","Cuartos de Final","Semifinal","Tercer Lugar","CAMPEÓN 🏆"];
