@@ -366,6 +366,9 @@ Only include confirmed final scores.`}]
   });
   // Sort dates by the first match datetime for each date
   const dates=Object.keys(matchesByDate).sort((a,b)=>getMatchStart(matchesByDate[a][0]) - getMatchStart(matchesByDate[b][0]));
+  const finishedMatchesSorted=[...MATCHES]
+    .filter(m=>actuals[m.id])
+    .sort((a,b)=>getMatchStart(a) - getMatchStart(b));
 
   const tabs=[
     {id:"matches",label:"⚽ Partidos"},
@@ -514,7 +517,7 @@ Only include confirmed final scores.`}]
             <div style={{fontSize:10,color:"#8b949e",marginBottom:12}}>
               Pronósticos por partido — solo partidos terminados. Tu nombre en azul.
             </div>
-            {MATCHES.filter(m=>actuals[m.id]).map(m=>{
+            {finishedMatchesSorted.map(m=>{
               const actual=actuals[m.id];
               const playerPreds=allPlayers.map(p=>{
                 const pred=allPredictions.find(pr=>pr.player_id===p.id&&pr.match_id===m.id);
@@ -539,7 +542,7 @@ Only include confirmed final scores.`}]
                 </div>
               );
             })}
-            {MATCHES.filter(m=>actuals[m.id]).length===0&&(
+            {finishedMatchesSorted.length===0&&(
               <div style={{textAlign:"center",color:"#8b949e",padding:40,fontSize:13}}>Aquí aparecen los pronósticos cuando terminen los partidos.</div>
             )}
           </div>
