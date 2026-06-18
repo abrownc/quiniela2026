@@ -64,7 +64,7 @@ const MATCHES = [
   {id:"j2",g:"J",home:"Austria",       away:"Jordania",       date:"2026-06-16",datetime:"2026-06-16T23:00:00-05:00",label:"Jun 16",md:1},
   // Jun 18
   {id:"a3",g:"A",home:"Rep. Checa",    away:"Sudáfrica",      date:"2026-06-18",datetime:"2026-06-18T11:00:00-05:00",label:"Jun 18",md:2},
-  {id:"a4",g:"A",home:"México",        away:"Corea del Sur",  date:"2026-06-18",datetime:"2026-06-18T22:00:00-05:00",label:"Jun 18",md:2},
+  {id:"a4",g:"A",home:"México",        away:"Corea del Sur",  date:"2026-06-18",datetime:"2026-06-18T20:00:00-05:00",label:"Jun 18",md:2},
   {id:"b3",g:"B",home:"Suiza",         away:"Bosnia-Herz.",   date:"2026-06-18",datetime:"2026-06-18T14:00:00-05:00",label:"Jun 18",md:2},
   {id:"b4",g:"B",home:"Canadá",        away:"Catar",          date:"2026-06-18",datetime:"2026-06-18T17:00:00-05:00",label:"Jun 18",md:2},
   // Jun 19
