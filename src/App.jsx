@@ -199,7 +199,11 @@ function getMatchStart(match){
 function formatMatchStart(match){
   const d = getMatchStart(match);
   try{
-    return d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Chicago'}).replace(',', '');
+    // Local device time (uses user's locale/timezone)
+    const local = d.toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}).replace(',', '');
+    // Original CT display for reference
+    const ct = d.toLocaleString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Chicago'});
+    return `${local} (${ct} CT)`;
   }catch{
     return d.toISOString();
   }
