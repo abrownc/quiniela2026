@@ -659,47 +659,70 @@ Only include confirmed final scores.`}]
               {syncing?"🤖 Sincronizando...":"🤖 Sync automático con IA"}
             </button>
             <div style={{fontSize:10,color:"#484f58",marginBottom:10,textAlign:"center"}}>— o ingresa manualmente —</div>
-            {MATCHES.filter(m=>getMatchStart(m)<=now).sort((a,b)=>getMatchStart(a)-getMatchStart(b)).map(m=>{
-              const a=actuals[m.id]||{};
-              return(
-                <div key={m.id} style={{display:"flex",alignItems:"center",gap:6,borderBottom:"1px solid #21262d",padding:"7px 0"}}>
-                  <span style={{color:"#484f58",fontSize:9,width:16}}>{m.g}</span>
-                  <span style={{color:"#8b949e",fontSize:11,width:110,flexShrink:0,textAlign:"left"}}>{formatMatchStart(m)}</span>
-                  <span style={{flex:1,color:"#e6edf3",fontSize:10}}>{m.home} vs {m.away}</span>
-                  <span style={{color:"#484f58",fontSize:9,width:32}}>{m.label}</span>
-                  <input id={`h_${m.id}`} type="number" min={0} max={20} placeholder="—" key={`h_${m.id}_${a.home_goals}`} defaultValue={a.home_goals??""}
-                    style={{width:30,height:26,background:"#0d1117",border:"1px solid #30363d",borderRadius:4,color:"#e6edf3",fontWeight:700,fontSize:12,textAlign:"center",outline:"none",padding:0}}
-                    onBlur={async e=>{
-                      const hEl = document.getElementById(`h_${m.id}`);
-                      const aEl = document.getElementById(`a_${m.id}`);
-                      const existing = actuals[m.id]||{};
-                      const hgRaw = hEl?.value ?? "";
-                      const agRaw = aEl?.value ?? "";
-                      const hg = hgRaw==="" ? (existing.home_goals ?? null) : +hgRaw;
-                      const ag = agRaw==="" ? (existing.away_goals ?? null) : +agRaw;
-                      if(hg===null && ag===null) return;
-                      await supabase.from("results").upsert({match_id:m.id,home_goals:hg,away_goals:ag},{onConflict:"match_id"});
-                      await loadActuals();await loadLeaderboard();
-                    }}/>
-                  <span style={{color:"#484f58",fontSize:10}}>-</span>
-                  <input id={`a_${m.id}`} type="number" min={0} max={20} placeholder="—" key={`a_${m.id}_${a.away_goals}`} defaultValue={a.away_goals??""}
-                    style={{width:30,height:26,background:"#0d1117",border:"1px solid #30363d",borderRadius:4,color:"#e6edf3",fontWeight:700,fontSize:12,textAlign:"center",outline:"none",padding:0}}
-                    onBlur={async e=>{
-                      const hEl = document.getElementById(`h_${m.id}`);
-                      const aEl = document.getElementById(`a_${m.id}`);
-                      const existing = actuals[m.id]||{};
-                      const hgRaw = hEl?.value ?? "";
-                      const agRaw = aEl?.value ?? "";
-                      const hg = hgRaw==="" ? (existing.home_goals ?? null) : +hgRaw;
-                      const ag = agRaw==="" ? (existing.away_goals ?? null) : +agRaw;
-                      if(hg===null && ag===null) return;
-                      await supabase.from("results").upsert({match_id:m.id,home_goals:hg,away_goals:ag},{onConflict:"match_id"});
-                      await loadActuals();await loadLeaderboard();
-                    }}/>
-                  {actuals[m.id]&&<span style={{color:"#3fb950",fontSize:9}}>✓</span>}
-                </div>
-              );
-            })}
+            {(() => {
+              const adminMatches = MATCHES.filter(m=>getMatchStart(m)<=now).sort((a,b)=>getMatchStart(a)-getMatchStart(b));
+              const adminByDate = {};
+              adminMatches.forEach(m=>{ if(!adminByDate[m.date]) adminByDate[m.date]=[]; adminByDate[m.date].push(m); });
+              const adminDates = Object.keys(adminByDate).sort((a,b)=>getMatchStart(adminByDate[a][0]) - getMatchStart(adminByDate[b][0]));
+              return adminDates.map(date=>{
+                const dayMatches = adminByDate[date];
+                const dayLabel = dayMatches[0].label;
+                const isToday = date===today;
+                const isPast = date<today;
+                return (
+                  <div key={date} style={{marginBottom:12}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,padding:"0 2px"}}>
+                      <span style={{fontSize:11,fontWeight:700,color:isToday?"#3fb950":isPast?"#484f58":"#e6edf3"}}>{dayLabel}{isToday?" · Hoy":""}</span>
+                      <div style={{flex:1,height:1,background:"#21262d"}}/>
+                      <span style={{fontSize:9,color:"#484f58"}}>{dayMatches.length} partidos</span>
+                    </div>
+                    <div style={{background:"#161b22",borderRadius:8,border:"1px solid #21262d",overflow:"hidden"}}>
+                      {dayMatches.map(m=>{
+                        const a=actuals[m.id]||{};
+                        return (
+                          <div key={m.id} style={{display:"flex",alignItems:"center",gap:6,borderBottom:"1px solid #21262d",padding:"7px 10px"}}>
+                            <span style={{color:"#484f58",fontSize:9,width:16}}>{m.g}</span>
+                            <span style={{color:"#8b949e",fontSize:11,width:110,flexShrink:0,textAlign:"left"}}>{formatMatchStart(m)}</span>
+                            <span style={{flex:1,color:"#e6edf3",fontSize:10}}>{m.home} vs {m.away}</span>
+                            <span style={{color:"#484f58",fontSize:9,width:32}}>{m.label}</span>
+                            <input id={`h_${m.id}`} type="number" min={0} max={20} placeholder="—" key={`h_${m.id}_${a.home_goals}`} defaultValue={a.home_goals??""}
+                              style={{width:30,height:26,background:"#0d1117",border:"1px solid #30363d",borderRadius:4,color:"#e6edf3",fontWeight:700,fontSize:12,textAlign:"center",outline:"none",padding:0}}
+                              onBlur={async e=>{
+                                const hEl = document.getElementById(`h_${m.id}`);
+                                const aEl = document.getElementById(`a_${m.id}`);
+                                const existing = actuals[m.id]||{};
+                                const hgRaw = hEl?.value ?? "";
+                                const agRaw = aEl?.value ?? "";
+                                const hg = hgRaw==="" ? (existing.home_goals ?? null) : +hgRaw;
+                                const ag = agRaw==="" ? (existing.away_goals ?? null) : +agRaw;
+                                if(hg===null && ag===null) return;
+                                await supabase.from("results").upsert({match_id:m.id,home_goals:hg,away_goals:ag},{onConflict:"match_id"});
+                                await loadActuals();await loadLeaderboard();
+                              }}/>
+                            <span style={{color:"#484f58",fontSize:10}}>-</span>
+                            <input id={`a_${m.id}`} type="number" min={0} max={20} placeholder="—" key={`a_${m.id}_${a.away_goals}`} defaultValue={a.away_goals??""}
+                              style={{width:30,height:26,background:"#0d1117",border:"1px solid #30363d",borderRadius:4,color:"#e6edf3",fontWeight:700,fontSize:12,textAlign:"center",outline:"none",padding:0}}
+                              onBlur={async e=>{
+                                const hEl = document.getElementById(`h_${m.id}`);
+                                const aEl = document.getElementById(`a_${m.id}`);
+                                const existing = actuals[m.id]||{};
+                                const hgRaw = hEl?.value ?? "";
+                                const agRaw = aEl?.value ?? "";
+                                const hg = hgRaw==="" ? (existing.home_goals ?? null) : +hgRaw;
+                                const ag = agRaw==="" ? (existing.away_goals ?? null) : +agRaw;
+                                if(hg===null && ag===null) return;
+                                await supabase.from("results").upsert({match_id:m.id,home_goals:hg,away_goals:ag},{onConflict:"match_id"});
+                                await loadActuals();await loadLeaderboard();
+                              }}/>
+                            {actuals[m.id]&&<span style={{color:"#3fb950",fontSize:9}}>✓</span>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              });
+            })()}
           </div>
         )}
       </div>
