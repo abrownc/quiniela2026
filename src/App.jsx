@@ -424,7 +424,7 @@ Only include confirmed final scores.`}]
   if(!player)return<LoginScreen onLogin={setPlayer}/>;
 
   const today=getTodayCT();
-  const now=getNowCT();
+  const now=new Date();
   const myPts=Object.entries(predictions).reduce((sum,[mid,pred])=>{
     const a=actuals[mid];if(!a)return sum;
     return sum+(calcScore(pred.home_goals,pred.away_goals,a.home_goals,a.away_goals)||0);
@@ -667,13 +667,35 @@ Only include confirmed final scores.`}]
                   <span style={{color:"#8b949e",fontSize:11,width:110,flexShrink:0,textAlign:"left"}}>{formatMatchStart(m)}</span>
                   <span style={{flex:1,color:"#e6edf3",fontSize:10}}>{m.home} vs {m.away}</span>
                   <span style={{color:"#484f58",fontSize:9,width:32}}>{m.label}</span>
-                  <input type="number" min={0} max={20} placeholder="—" key={`h_${m.id}_${a.home_goals}`} defaultValue={a.home_goals??""}
+                  <input id={`h_${m.id}`} type="number" min={0} max={20} placeholder="—" key={`h_${m.id}_${a.home_goals}`} defaultValue={a.home_goals??""}
                     style={{width:30,height:26,background:"#0d1117",border:"1px solid #30363d",borderRadius:4,color:"#e6edf3",fontWeight:700,fontSize:12,textAlign:"center",outline:"none",padding:0}}
-                    onBlur={async e=>{const hg=e.target.value===""?null:+e.target.value;const ag=actuals[m.id]?.away_goals??null;if(hg!==null&&ag!==null){await supabase.from("results").upsert({match_id:m.id,home_goals:hg,away_goals:ag},{onConflict:"match_id"});await loadActuals();await loadLeaderboard();}}}/>
+                    onBlur={async e=>{
+                      const hEl = document.getElementById(`h_${m.id}`);
+                      const aEl = document.getElementById(`a_${m.id}`);
+                      const existing = actuals[m.id]||{};
+                      const hgRaw = hEl?.value ?? "";
+                      const agRaw = aEl?.value ?? "";
+                      const hg = hgRaw==="" ? (existing.home_goals ?? null) : +hgRaw;
+                      const ag = agRaw==="" ? (existing.away_goals ?? null) : +agRaw;
+                      if(hg===null && ag===null) return;
+                      await supabase.from("results").upsert({match_id:m.id,home_goals:hg,away_goals:ag},{onConflict:"match_id"});
+                      await loadActuals();await loadLeaderboard();
+                    }}/>
                   <span style={{color:"#484f58",fontSize:10}}>-</span>
-                  <input type="number" min={0} max={20} placeholder="—" key={`a_${m.id}_${a.away_goals}`} defaultValue={a.away_goals??""}
+                  <input id={`a_${m.id}`} type="number" min={0} max={20} placeholder="—" key={`a_${m.id}_${a.away_goals}`} defaultValue={a.away_goals??""}
                     style={{width:30,height:26,background:"#0d1117",border:"1px solid #30363d",borderRadius:4,color:"#e6edf3",fontWeight:700,fontSize:12,textAlign:"center",outline:"none",padding:0}}
-                    onBlur={async e=>{const ag=e.target.value===""?null:+e.target.value;const hg=actuals[m.id]?.home_goals??null;if(hg!==null&&ag!==null){await supabase.from("results").upsert({match_id:m.id,home_goals:hg,away_goals:ag},{onConflict:"match_id"});await loadActuals();await loadLeaderboard();}}}/>
+                    onBlur={async e=>{
+                      const hEl = document.getElementById(`h_${m.id}`);
+                      const aEl = document.getElementById(`a_${m.id}`);
+                      const existing = actuals[m.id]||{};
+                      const hgRaw = hEl?.value ?? "";
+                      const agRaw = aEl?.value ?? "";
+                      const hg = hgRaw==="" ? (existing.home_goals ?? null) : +hgRaw;
+                      const ag = agRaw==="" ? (existing.away_goals ?? null) : +agRaw;
+                      if(hg===null && ag===null) return;
+                      await supabase.from("results").upsert({match_id:m.id,home_goals:hg,away_goals:ag},{onConflict:"match_id"});
+                      await loadActuals();await loadLeaderboard();
+                    }}/>
                   {actuals[m.id]&&<span style={{color:"#3fb950",fontSize:9}}>✓</span>}
                 </div>
               );
