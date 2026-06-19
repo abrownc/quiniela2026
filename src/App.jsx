@@ -434,6 +434,7 @@ Only include confirmed final scores.`}]
   // Refs for scrolling to current day
   const dateRefs = useRef({});
   const compareRefs = useRef({});
+  const adminRefs = useRef({});
 
   // Scroll helper: try today, then next date, else last
   function scrollToDateMap(refMap, keys){
@@ -466,6 +467,14 @@ Only include confirmed final scores.`}]
     if(tab==="compare"){
       const compareDates = Object.keys(compareRefs.current).sort();
       scrollToDateMap(compareRefs, compareDates);
+    }
+    if(tab==="admin"){
+      // build admin date list and scroll to today's group
+      const adminMatches = MATCHES.filter(m=>getMatchStart(m)<=now).sort((a,b)=>getMatchStart(a)-getMatchStart(b));
+      const adminByDate = {};
+      adminMatches.forEach(m=>{ if(!adminByDate[m.date]) adminByDate[m.date]=[]; adminByDate[m.date].push(m); });
+      const adminDates = Object.keys(adminByDate).sort((a,b)=>getMatchStart(adminByDate[a][0]) - getMatchStart(adminByDate[b][0]));
+      scrollToDateMap(adminRefs, adminDates);
     }
   },[tab,dates,finishedMatchesSorted]);
 
@@ -670,7 +679,7 @@ Only include confirmed final scores.`}]
                 const isToday = date===today;
                 const isPast = date<today;
                 return (
-                  <div key={date} style={{marginBottom:12}}>
+                  <div key={date} ref={el=>adminRefs.current[date]=el} style={{marginBottom:12}}>
                     <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,padding:"0 2px"}}>
                       <span style={{fontSize:11,fontWeight:700,color:isToday?"#3fb950":isPast?"#484f58":"#e6edf3"}}>{dayLabel}{isToday?" · Hoy":""}</span>
                       <div style={{flex:1,height:1,background:"#21262d"}}/>
