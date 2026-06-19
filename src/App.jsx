@@ -659,7 +659,7 @@ Only include confirmed final scores.`}]
               {syncing?"🤖 Sincronizando...":"🤖 Sync automático con IA"}
             </button>
             <div style={{fontSize:10,color:"#484f58",marginBottom:10,textAlign:"center"}}>— o ingresa manualmente —</div>
-            {MATCHES.filter(m=>getMatchStart(m)<=now).map(m=>{
+            {MATCHES.filter(m=>getMatchStart(m)<=now).sort((a,b)=>getMatchStart(a)-getMatchStart(b)).map(m=>{
               const a=actuals[m.id]||{};
               return(
                 <div key={m.id} style={{display:"flex",alignItems:"center",gap:6,borderBottom:"1px solid #21262d",padding:"7px 0"}}>
