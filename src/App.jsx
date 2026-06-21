@@ -460,13 +460,16 @@ Only include confirmed final scores.`}]
     .filter(m=>actuals[m.id])
     .sort((a,b)=>getMatchStart(a) - getMatchStart(b));
 
-  // When tab changes or dates update, scroll to current day for matches/compare
-  // (moved below so `dates` and `finishedMatchesSorted` are defined)
+  // Auto-scroll only when the tab changes (prevents repeated scrolling while data refreshes)
   useEffect(()=>{
-    if(tab==="matches") scrollToDateMap(dateRefs, dates);
+    if(tab==="matches"){
+      scrollToDateMap(dateRefs, dates);
+      return;
+    }
     if(tab==="compare"){
       const compareDates = Object.keys(compareRefs.current).sort();
       scrollToDateMap(compareRefs, compareDates);
+      return;
     }
     if(tab==="admin"){
       // build admin date list and scroll to today's group
@@ -475,8 +478,9 @@ Only include confirmed final scores.`}]
       adminMatches.forEach(m=>{ if(!adminByDate[m.date]) adminByDate[m.date]=[]; adminByDate[m.date].push(m); });
       const adminDates = Object.keys(adminByDate).sort((a,b)=>getMatchStart(adminByDate[a][0]) - getMatchStart(adminByDate[b][0]));
       scrollToDateMap(adminRefs, adminDates);
+      return;
     }
-  },[tab,dates,finishedMatchesSorted]);
+  },[tab]);
 
   const tabs=[
     {id:"matches",label:"⚽ Partidos"},
