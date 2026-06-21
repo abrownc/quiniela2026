@@ -503,9 +503,11 @@ Only include confirmed final scores.`}]
           <div style={{textAlign:"right"}}>
             <div style={{fontSize:22,fontWeight:900,color:"#3fb950",lineHeight:1}}>{myPts}</div>
             <div style={{fontSize:10,color:"#8b949e"}}>pts{myRank>0?` · #${myRank}`:""}</div>
-            <button onClick={syncResults} disabled={true} style={{marginTop:4,background:syncing?"#21262d":"#1f6feb",border:"none",color:"white",fontSize:9,padding:"3px 8px",borderRadius:4,cursor:syncing?"not-allowed":"pointer",fontWeight:600,opacity:syncing?0.6:1}}>
-              {syncing?"⟳...":"⟳ Sync"}
-            </button>
+            {isAdmin && (
+              <button onClick={syncResults} disabled={syncing} style={{marginTop:4,background:syncing?"#21262d":"#1f6feb",border:"none",color:"white",fontSize:9,padding:"3px 8px",borderRadius:4,cursor:syncing?"not-allowed":"pointer",fontWeight:600,opacity:syncing?0.6:1}}>
+                {syncing?"⟳...":"⟳ Sync"}
+              </button>
+            )}
           </div>
         </div>
         {lastSync&&<div style={{fontSize:9,color:"#484f58",marginTop:2}}>Última sync: {lastSync}</div>}
@@ -668,7 +670,7 @@ Only include confirmed final scores.`}]
             <div style={{color:"#f85149",fontSize:11,marginBottom:12,background:"#2d1515",borderRadius:8,padding:"10px 12px"}}>
               ⚠️ Panel admin — ingresa resultados finales.
             </div>
-            <button onClick={syncResults} disabled={true} style={{width:"100%",background:"#1f6feb",border:"none",color:"white",padding:"10px",borderRadius:8,fontWeight:700,fontSize:13,cursor:"pointer",marginBottom:12,opacity:syncing?0.6:1}}>
+            <button onClick={syncResults} disabled={syncing} style={{width:"100%",background:"#1f6feb",border:"none",color:"white",padding:"10px",borderRadius:8,fontWeight:700,fontSize:13,cursor:"pointer",marginBottom:12,opacity:syncing?0.6:1}}>
               {syncing?"🤖 Sincronizando...":"🤖 Sync automático con IA"}
             </button>
             <div style={{fontSize:10,color:"#484f58",marginBottom:10,textAlign:"center"}}>— o ingresa manualmente —</div>
