@@ -90,8 +90,8 @@ const MATCHES = [
   // Jun 23
   {id:"k3",g:"K",home:"Portugal",      away:"Uzbekistán",     date:"2026-06-23",datetime:"2026-06-23T12:00:00-05:00",label:"Jun 23",md:2},
   {id:"k4",g:"K",home:"Colombia",      away:"DR Congo",       date:"2026-06-23",datetime:"2026-06-23T21:00:00-05:00",label:"Jun 23",md:2},
-  {id:"l3",g:"L",home:"Ghana",         away:"Croacia",        date:"2026-06-23",datetime:"2026-06-23T15:00:00-05:00",label:"Jun 23",md:2},
-  {id:"l4",g:"L",home:"Inglaterra",    away:"Panamá",         date:"2026-06-23",datetime:"2026-06-23T18:00:00-05:00",label:"Jun 23",md:2},
+  {id:"l3",g:"L",home:"Inglaterra",    away:"Ghana",     date:"2026-06-23",datetime:"2026-06-23T15:00:00-05:00",label:"Jun 23",md:2},
+  {id:"l4",g:"L",home:"Panamá",        away:"Croacia",         date:"2026-06-23",datetime:"2026-06-23T18:00:00-05:00",label:"Jun 23",md:2},
   // Jun 24
   {id:"a5",g:"A",home:"Rep. Checa",    away:"México",         date:"2026-06-24",datetime:"2026-06-24T22:00:00-05:00",label:"Jun 24",md:3},
   {id:"a6",g:"A",home:"Sudáfrica",     away:"Corea del Sur",  date:"2026-06-24",datetime:"2026-06-24T22:00:00-05:00",label:"Jun 24",md:3},
@@ -118,8 +118,8 @@ const MATCHES = [
   {id:"j6",g:"J",home:"Argelia",       away:"Austria",        date:"2026-06-27",datetime:"2026-06-27T21:00:00-05:00",label:"Jun 27",md:3},
   {id:"k5",g:"K",home:"Colombia",      away:"Portugal",       date:"2026-06-27",datetime:"2026-06-27T18:30:00-05:00",label:"Jun 27",md:3},
   {id:"k6",g:"K",home:"DR Congo",      away:"Uzbekistán",     date:"2026-06-27",datetime:"2026-06-27T18:30:00-05:00",label:"Jun 27",md:3},
-  {id:"l5",g:"L",home:"Ghana",         away:"Inglaterra",     date:"2026-06-27",datetime:"2026-06-27T16:00:00-05:00",label:"Jun 27",md:3},
-  {id:"l6",g:"L",home:"Croacia",       away:"Panamá",         date:"2026-06-27",datetime:"2026-06-27T16:00:00-05:00",label:"Jun 27",md:3},
+  {id:"l5",g:"L",home:"Panamá",         away:"Inglaterra",     date:"2026-06-27",datetime:"2026-06-27T16:00:00-05:00",label:"Jun 27",md:3},
+  {id:"l6",g:"L",home:"Croacia",       away:"Ghana",         date:"2026-06-27",datetime:"2026-06-27T16:00:00-05:00",label:"Jun 27",md:3},
 ];
 
 // Knockout stages
