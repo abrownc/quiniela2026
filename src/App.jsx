@@ -179,23 +179,44 @@ const ALL_TEAMS=[...new Set(Object.values(GROUPS).flat())].sort();
 const TOP_SCORERS=["K. Mbappé (FRA)","L. Messi (ARG)","E. Haaland (NOR)","H. Kane (ENG)","Vinicius Jr. (BRA)","J. Bellingham (ENG)","L. Martínez (MEX)","C. Ronaldo (POR)","M. Salah (EGY)","A. Dávila (MEX)","O. Giménez (MEX)","L. Werner (GER)","A. Mitoma (JPN)","V. Osimhen (NGA)"];
 const MEXICO_ROUNDS=["Fase de Grupos","Ronda de 32","Octavos de Final","Cuartos de Final","Semifinal","Tercer Lugar","CAMPEÓN 🏆"];
 
+/**
+ * Get today's date string in America/Chicago timezone in YYYY-MM-DD format.
+ * This is used to compare match dates against "today" in CT (Central Time).
+ * Returning a canonical date string keeps date comparisons simple elsewhere.
+ */
 function getTodayCT(){
   const d=new Date(new Date().toLocaleString("en-US",{timeZone:"America/Chicago"}));
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 
+/**
+ * Get a Date object representing the current time in America/Chicago timezone.
+ * Many match time comparisons (start times, is-past checks) should use CT consistently.
+ */
 function getNowCT(){
   return new Date(new Date().toLocaleString("en-US",{timeZone:"America/Chicago"}));
 }
 
+/**
+ * Resolve the start Date for a match.
+ * If `match.datetime` is present (ISO string with timezone), parse and return it.
+ * Otherwise interpret `match.date` as a CT date at midnight.
+ * Returning a Date simplifies sorting and comparisons elsewhere.
+ */
 function getMatchStart(match){
-  // If a precise datetime is provided (ISO string), use it. Otherwise fall back to date-only at midnight CT.
+  // If a precise datetime is provided (ISO string), use it.
   if(match.datetime){
     return new Date(match.datetime);
   }
+  // Fallback: treat the date string as CT midnight.
   return new Date(new Date(match.date).toLocaleString("en-US",{timeZone:"America/Chicago"}));
 }
 
+/**
+ * Format a match start time for display.
+ * Shows the local device time followed by the CT time in parentheses.
+ * Falls back to ISO string on any formatting error.
+ */
 function formatMatchStart(match){
   const d = getMatchStart(match);
   try{
@@ -205,16 +226,33 @@ function formatMatchStart(match){
     const ct = d.toLocaleString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Chicago'});
     return `${local} (${ct} CT)`;
   }catch{
+    // If locale formatting fails, return a machine-readable timestamp
     return d.toISOString();
   }
 }
 
+/**
+ * Calculate points awarded for a single prediction vs actual result.
+ * Rules:
+ * - If any score is missing (null/undefined): return null (not computable yet).
+ * - Compare winner (home/away/draw). If predicted winner differs from actual winner: 0 points.
+ * - Exact scoreline match: 3 points.
+ * - Correct goal difference (but not exact): 2 points.
+ * - Otherwise (correct winner but neither exact nor diff) => 1 point.
+ */
 function calcScore(hp,ap,ha,aa){
+  // If any of the inputs are missing, we cannot compute points yet.
   if(hp==null||ap==null||ha==null||aa==null) return null;
-  const pw=hp>ap?"H":hp<ap?"A":"D",aw=ha>aa?"H":ha<aa?"A":"D";
-  if(pw!==aw) return 0;
-  if(hp===ha&&ap===aa) return 3;
-  if(Math.abs(hp-ap)===Math.abs(ha-aa)) return 2;
+  // Determine predicted winner (pw) and actual winner (aw): 'H' home, 'A' away, 'D' draw.
+  const pw = hp>ap ? "H" : hp<ap ? "A" : "D";
+  const aw = ha>aa ? "H" : ha<aa ? "A" : "D";
+  // If predicted winner doesn't match actual winner, zero points.
+  if(pw !== aw) return 0;
+  // Exact score match is highest reward.
+  if(hp === ha && ap === aa) return 3;
+  // Correct goal difference (absolute margin) but not exact.
+  if(Math.abs(hp - ap) === Math.abs(ha - aa)) return 2;
+  // Correct side (winner) but not exact or equal difference.
   return 1;
 }
 
@@ -223,13 +261,30 @@ const S={
   lbl:{fontSize:11,color:"#8b949e",fontWeight:600,display:"block",marginBottom:5,textTransform:"uppercase",letterSpacing:0.8},
 };
 
+/**
+ * `PtsBadge` - small visual component that renders a colored badge for points.
+ * - `pts` can be 0,1,2,3 or null. Null renders nothing.
+ */
 function PtsBadge({pts}){
   if(pts==null) return null;
-  const c={0:{bg:"#3d1515",co:"#f85149"},1:{bg:"#2d2000",co:"#d29922"},2:{bg:"#0d2137",co:"#388bfd"},3:{bg:"#0d2b1d",co:"#3fb950"}}[pts]||{bg:"#3d1515",co:"#f85149"};
+  // Color palette keyed by points value
+  const c = {0:{bg:"#3d1515",co:"#f85149"},1:{bg:"#2d2000",co:"#d29922"},2:{bg:"#0d2137",co:"#388bfd"},3:{bg:"#0d2b1d",co:"#3fb950"}}[pts] || {bg:"#3d1515",co:"#f85149"};
   return <span style={{background:c.bg,color:c.co,fontWeight:800,fontSize:10,padding:"1px 6px",borderRadius:20,whiteSpace:"nowrap"}}>{pts===0?"0":`+${pts}`}</span>;
 }
 
 // Compact match row
+/**
+ * `MatchRow` - compact row for a single match shown in the matches list.
+ * Props:
+ * - `match`: match definition from `MATCHES`.
+ * - `pred`: current user's prediction (may be undefined).
+ * - `actual`: actual result if available.
+ * - `onSave(matchId, home_goals, away_goals)`: callback to persist a new prediction.
+ *
+ * Behavior notes:
+ * - Inputs are locked once the match is in the past or an actual result exists.
+ * - On blur of an input the `onSave` callback is invoked (unless locked).
+ */
 function MatchRow({match,pred,actual,onSave}){
   const now=new Date();
   const locked=!!actual || getMatchStart(match) <= now;
@@ -240,9 +295,12 @@ function MatchRow({match,pred,actual,onSave}){
   const pts=calcScore(h!==""?+h:null,a!==""?+a:null,actual?.home_goals??null,actual?.away_goals??null);
 
   async function blur(){
-    if(locked||h===""||a==="") return;
-    await onSave(match.id,+h,+a);
-    setSaved(true);setTimeout(()=>setSaved(false),1200);
+    // If the row is locked (past match or already has an official result) or inputs are incomplete, do nothing.
+    if(locked || h==="" || a==="") return;
+    // Persist the prediction via provided callback and show a small visual confirmation.
+    await onSave(match.id, +h, +a);
+    setSaved(true);
+    setTimeout(()=>setSaved(false), 1200);
   }
 
   return (
@@ -289,9 +347,13 @@ function LoginScreen({onLogin}){
   async function join(){
     const t=name.trim();if(!t)return;setLoading(true);
     try{
-      const {data,error}=await supabase.from("players").upsert({name:t},{onConflict:"name"}).select().single();
-      if(error)throw error;
-      localStorage.setItem("quiniela_player",JSON.stringify(data));
+      // Upsert the player into the `players` table by name.
+      // If the player already exists, the DB will return the existing row.
+      const {data,error} = await supabase.from("players").upsert({name:t},{onConflict:"name"}).select().single();
+      if(error) throw error;
+      // Persist locally so the next visit logs in automatically.
+      localStorage.setItem("quiniela_player", JSON.stringify(data));
+      // Notify parent component that we've logged in.
       onLogin(data);
     }catch{setError("Error al entrar. Intenta de nuevo.");}
     setLoading(false);
@@ -341,83 +403,123 @@ export default function App(){
   async function loadAll(){setLoading(true);await Promise.all([loadPredictions(),loadActuals(),loadExtras(),loadLeaderboard()]);setLoading(false);}
 
   async function loadPredictions(){
-    const{data}=await supabase.from("predictions").select("*").eq("player_id",player.id);
-    if(data){const m={};data.forEach(r=>{m[r.match_id]=r;});setPredictions(m);}
+    // Load the current player's predictions and map them by match id for O(1) access.
+    const {data} = await supabase.from("predictions").select("*").eq("player_id", player.id);
+    if(data){
+      const m = {};
+      data.forEach(r => { m[r.match_id] = r; });
+      setPredictions(m);
+    }
   }
 
   async function loadActuals(){
-    const{data}=await supabase.from("results").select("*");
-    const m={...KNOWN_RESULTS};
-    if(data)data.forEach(r=>{m[r.match_id]={home_goals:r.home_goals,away_goals:r.away_goals};});
+    // Load official results from DB and merge with the KNOWN_RESULTS (static historical ones).
+    const {data} = await supabase.from("results").select("*");
+    const m = {...KNOWN_RESULTS};
+    if(data) data.forEach(r => { m[r.match_id] = {home_goals: r.home_goals, away_goals: r.away_goals}; });
     setActuals(m);
   }
 
   async function loadExtras(){
-    const{data}=await supabase.from("extras").select("*").eq("player_id",player.id).maybeSingle();
-    if(data)setExtras(data);
+    // Load per-player extra predictions (champion, top scorer, group winners, etc.)
+    const {data} = await supabase.from("extras").select("*").eq("player_id", player.id).maybeSingle();
+    if(data) setExtras(data);
   }
 
   async function loadLeaderboard(){
-    const[{data:players},{data:preds},{data:results}]=await Promise.all([
+    // Build leaderboard: fetch players, all predictions, and results and compute points.
+    const [{data:players},{data:preds},{data:results}] = await Promise.all([
       supabase.from("players").select("id,name"),
       supabase.from("predictions").select("*"),
       supabase.from("results").select("*"),
     ]);
-    if(!players||!preds||!results)return;
-    const rMap={...KNOWN_RESULTS};
-    results.forEach(r=>{rMap[r.match_id]={home_goals:r.home_goals,away_goals:r.away_goals};});
+    if(!players || !preds || !results) return;
+    // Create a result map starting from KNOWN_RESULTS and overlay DB results.
+    const rMap = {...KNOWN_RESULTS};
+    results.forEach(r => { rMap[r.match_id] = {home_goals: r.home_goals, away_goals: r.away_goals}; });
     setAllPredictions(preds);
     setAllPlayers(players);
-    const board=players.map(p=>{
-      const myP=preds.filter(pr=>pr.player_id===p.id);
-      const pts=myP.reduce((s,pr)=>{const a=rMap[pr.match_id];if(!a)return s;return s+(calcScore(pr.home_goals,pr.away_goals,a.home_goals,a.away_goals)||0);},0);
-      const exact=myP.filter(pr=>{const a=rMap[pr.match_id];return a&&calcScore(pr.home_goals,pr.away_goals,a.home_goals,a.away_goals)===3;}).length;
-      return{name:p.name,pts,exact,total:myP.length};
-    }).sort((a,b)=>b.pts-a.pts||b.exact-a.exact);
+
+    // For each player, compute total points and exact-score count.
+    const board = players.map(p => {
+      const myP = preds.filter(pr => pr.player_id === p.id);
+      const pts = myP.reduce((s, pr) => {
+        const a = rMap[pr.match_id];
+        if(!a) return s;
+        return s + (calcScore(pr.home_goals, pr.away_goals, a.home_goals, a.away_goals) || 0);
+      }, 0);
+      const exact = myP.filter(pr => {
+        const a = rMap[pr.match_id];
+        return a && calcScore(pr.home_goals, pr.away_goals, a.home_goals, a.away_goals) === 3;
+      }).length;
+      return {name: p.name, pts, exact, total: myP.length};
+    }).sort((a,b) => b.pts - a.pts || b.exact - a.exact);
     setLeaderboard(board);
   }
 
   const syncResults=useCallback(async()=>{
-    if(!ANTHROPIC_KEY){alert("Falta VITE_ANTHROPIC_KEY en Netlify");return;}
+    // WARNING: This function currently uses a client-side Anthropic API key.
+    // Exposing the key in browser bundles is a security risk. Prefer moving
+    // the call to a serverless endpoint which stores the key securely.
+    if(!ANTHROPIC_KEY){
+      alert("Falta VITE_ANTHROPIC_KEY en Netlify");
+      return;
+    }
     setSyncing(true);
     try{
-      const now=getNowCT();
-      const today=getTodayCT();
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",
-        headers:{"Content-Type":"application/json","x-api-key":ANTHROPIC_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-        body:JSON.stringify({
-          model:"claude-haiku-4-5-20251001",max_tokens:2000,
-          system:`FIFA World Cup 2026 results tracker. Today is ${today}. Return ONLY valid JSON, no markdown.`,
-          messages:[{role:"user",content:`Return final scores for finished 2026 World Cup matches as of ${today}.
-Matches: ${MATCHES.filter(m=>getMatchStart(m)<=now).map(m=>`${m.id}:${m.home} vs ${m.away}(${m.label})`).join(",")}
+      const now = getNowCT();
+      const today = getTodayCT();
+
+      // Build a clear prompt listing finished matches so the model only returns
+      // results for matches that have already taken place.
+      const res = await fetch("https://api.anthropic.com/v1/messages",{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": ANTHROPIC_KEY,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 2000,
+          system: `FIFA World Cup 2026 results tracker. Today is ${today}. Return ONLY valid JSON, no markdown.`,
+          messages: [{ role: "user", content: `Return final scores for finished 2026 World Cup matches as of ${today}.
+Matches: ${MATCHES.filter(m => getMatchStart(m) <= now).map(m => `${m.id}:${m.home} vs ${m.away}(${m.label})`).join(",")}
 JSON format: {"results":[{"id":"k1","home_goals":2,"away_goals":0}]}
-Only include confirmed final scores.`}]
+Only include confirmed final scores.` }]
         })
       });
-      const data=await res.json();
-      const text=data.content?.find(b=>b.type==="text")?.text||"{}";
-      const parsed=JSON.parse(text.replace(/```json|```/g,"").trim());
+
+      // Parse model response and write any confirmed results to the DB.
+      const data = await res.json();
+      const text = data.content?.find(b => b.type === "text")?.text || "{}";
+      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
       if(parsed.results?.length){
         for(const r of parsed.results){
-          if(r.home_goals==null||r.away_goals==null)continue;
-          await supabase.from("results").upsert({match_id:r.id,home_goals:r.home_goals,away_goals:r.away_goals},{onConflict:"match_id"});
+          if(r.home_goals == null || r.away_goals == null) continue;
+          // Upsert each confirmed result into `results` table.
+          await supabase.from("results").upsert({match_id: r.id, home_goals: r.home_goals, away_goals: r.away_goals}, {onConflict: "match_id"});
         }
-        await loadActuals();await loadLeaderboard();
-        setLastSync(new Date().toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"}));
+        // Refresh in-memory actuals and leaderboard after writing results.
+        await loadActuals();
+        await loadLeaderboard();
+        setLastSync(new Date().toLocaleTimeString("es-MX", {hour: "2-digit", minute: "2-digit"}));
       }
-    }catch(e){console.error(e);}
+    }catch(e){ console.error(e); }
     setSyncing(false);
   },[player]);
 
   async function savePrediction(matchId,hg,ag){
-    await supabase.from("predictions").upsert({player_id:player.id,match_id:matchId,home_goals:hg,away_goals:ag},{onConflict:"player_id,match_id"});
-    setPredictions(prev=>({...prev,[matchId]:{match_id:matchId,home_goals:hg,away_goals:ag}}));
+    // Persist a single prediction row and update local state immediately.
+    await supabase.from("predictions").upsert({player_id: player.id, match_id: matchId, home_goals: hg, away_goals: ag}, {onConflict: "player_id,match_id"});
+    setPredictions(prev => ({ ...prev, [matchId]: { match_id: matchId, home_goals: hg, away_goals: ag } }));
   }
 
   async function saveExtras(nx){
-    const s={...nx,player_id:player.id};
-    await supabase.from("extras").upsert(s,{onConflict:"player_id"});
+    // Save extras (champion, top scorer, group winners, etc.) for the player.
+    const s = { ...nx, player_id: player.id };
+    await supabase.from("extras").upsert(s, { onConflict: "player_id" });
     setExtras(s);
   }
 
@@ -438,10 +540,15 @@ Only include confirmed final scores.`}]
 
   // Scroll helper: try today, then next date, else last
   function scrollToDateMap(refMap, keys){
-    if(!keys||keys.length===0) return;
-    const target = keys.find(d=>d===today) || keys.find(d=>d>today) || keys[keys.length-1];
+    // Accepts a map of refs and an ordered list of keys (date strings).
+    // Prefers today's date, then the next future date, otherwise falls back to the last date.
+    if(!keys || keys.length === 0) return;
+    const target = keys.find(d => d === today) || keys.find(d => d > today) || keys[keys.length - 1];
     const el = refMap.current && refMap.current[target];
-    if(el && typeof el.scrollIntoView === 'function') setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);
+    if(el && typeof el.scrollIntoView === 'function') {
+      // Use a small timeout so the layout is stable before scrolling.
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    }
   }
 
   // Group matches by date and sort by datetime
@@ -460,27 +567,30 @@ Only include confirmed final scores.`}]
     .filter(m=>actuals[m.id])
     .sort((a,b)=>getMatchStart(a) - getMatchStart(b));
 
-  // Auto-scroll only when the tab changes (prevents repeated scrolling while data refreshes)
+  // Auto-scroll only when the `tab` changes (prevents repeated scrolling while data refreshes).
+  // This keeps the Admin form stable while entering results and avoids jumping.
   useEffect(()=>{
     if(tab==="matches"){
+      // When switching to Matches tab, scroll to the current day's group of matches.
       scrollToDateMap(dateRefs, dates);
       return;
     }
     if(tab==="compare"){
+      // When switching to Compare tab, scroll to the first finished match grouping available.
       const compareDates = Object.keys(compareRefs.current).sort();
       scrollToDateMap(compareRefs, compareDates);
       return;
     }
     if(tab==="admin"){
-      // build admin date list and scroll to today's group
-      const adminMatches = MATCHES.filter(m=>getMatchStart(m)<=now).sort((a,b)=>getMatchStart(a)-getMatchStart(b));
+      // When switching to Admin tab, scroll to the group containing today's matches (if any).
+      const adminMatches = MATCHES.filter(m => getMatchStart(m) <= now).sort((a,b) => getMatchStart(a) - getMatchStart(b));
       const adminByDate = {};
-      adminMatches.forEach(m=>{ if(!adminByDate[m.date]) adminByDate[m.date]=[]; adminByDate[m.date].push(m); });
-      const adminDates = Object.keys(adminByDate).sort((a,b)=>getMatchStart(adminByDate[a][0]) - getMatchStart(adminByDate[b][0]));
+      adminMatches.forEach(m => { if(!adminByDate[m.date]) adminByDate[m.date] = []; adminByDate[m.date].push(m); });
+      const adminDates = Object.keys(adminByDate).sort((a,b) => getMatchStart(adminByDate[a][0]) - getMatchStart(adminByDate[b][0]));
       scrollToDateMap(adminRefs, adminDates);
       return;
     }
-  },[tab]);
+  }, [tab]);
 
   const tabs=[
     {id:"matches",label:"⚽ Partidos"},
