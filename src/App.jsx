@@ -126,21 +126,21 @@ const MATCHES = [
 // Round of 32 (m73 - m88)
 MATCHES.push(
   {id:"m73",g:"R32",home:"Sudáfrica",away:"Canadá",date:"2026-06-28",datetime:"2026-06-28T14:00:00-05:00",label:"Jun 28"},
-  {id:"m74",g:"R32",home:"Winner Group E",away:"3rd place (A/B/C/D/F)",date:"2026-06-29",datetime:"2026-06-29T15:30:00-05:00",label:"Jun 29"},
-  {id:"m75",g:"R32",home:"Winner Group F",away:"Marruecos",date:"2026-06-29",datetime:"2026-06-29T22:00:00-05:00",label:"Jun 29"},
-  {id:"m76",g:"R32",home:"Brasil",away:"Runner-up Group F",date:"2026-06-29",datetime:"2026-06-29T12:00:00-05:00",label:"Jun 29"},
-  {id:"m77",g:"R32",home:"Winner Group I",away:"3rd place (C/D/F/G/H)",date:"2026-06-30",datetime:"2026-06-30T16:00:00-05:00",label:"Jun 30"},
-  {id:"m78",g:"R32",home:"Runner-up Group E",away:"Runner-up Group I",date:"2026-06-30",datetime:"2026-06-30T12:00:00-05:00",label:"Jun 30"},
-  {id:"m79",g:"R32",home:"México",away:"3rd place (C/E/F/H/I)",date:"2026-06-30",datetime:"2026-06-30T22:00:00-05:00",label:"Jun 30"},
-  {id:"m80",g:"R32",home:"Winner Group L",away:"3rd place (E/H/I/J/K)",date:"2026-07-01",datetime:"2026-07-01T11:00:00-05:00",label:"Jul 01"},
-  {id:"m81",g:"R32",home:"Winner Group D",away:"3rd place (B/E/F/I/J)",date:"2026-07-01",datetime:"2026-07-01T19:00:00-05:00",label:"Jul 01"},
-  {id:"m82",g:"R32",home:"Winner Group G",away:"3rd place (A/E/H/I/J)",date:"2026-07-01",datetime:"2026-07-01T15:00:00-05:00",label:"Jul 01"},
-  {id:"m83",g:"R32",home:"Runner-up Group K",away:"Runner-up Group L",date:"2026-07-02",datetime:"2026-07-02T18:00:00-05:00",label:"Jul 02"},
-  {id:"m84",g:"R32",home:"Winner Group H",away:"Runner-up Group J",date:"2026-07-02",datetime:"2026-07-02T14:00:00-05:00",label:"Jul 02"},
-  {id:"m85",g:"R32",home:"Suiza",away:"3rd place (E/F/G/I/J)",date:"2026-07-02",datetime:"2026-07-02T22:00:00-05:00",label:"Jul 02"},
-  {id:"m86",g:"R32",home:"Winner Group J",away:"Runner-up Group H",date:"2026-07-03",datetime:"2026-07-03T17:00:00-05:00",label:"Jul 03"},
-  {id:"m87",g:"R32",home:"Winner Group K",away:"3rd place (D/E/I/J/L)",date:"2026-07-03",datetime:"2026-07-03T20:30:00-05:00",label:"Jul 03"},
-  {id:"m88",g:"R32",home:"Runner-up Group D",away:"Runner-up Group G",date:"2026-07-03",datetime:"2026-07-03T13:00:00-05:00",label:"Jul 03"}
+  {id:"m74",g:"R32",home:"Alemania",away:"Paraguay",date:"2026-06-29",datetime:"2026-06-29T15:30:00-05:00",label:"Jun 29"},
+  {id:"m75",g:"R32",home:"Países Bajos",away:"Marruecos",date:"2026-06-29",datetime:"2026-06-29T22:00:00-05:00",label:"Jun 29"},
+  {id:"m76",g:"R32",home:"Brasil",away:"Japón",date:"2026-06-29",datetime:"2026-06-29T12:00:00-05:00",label:"Jun 29"},
+  {id:"m77",g:"R32",home:"Francia",away:"Suecia",date:"2026-06-30",datetime:"2026-06-30T16:00:00-05:00",label:"Jun 30"},
+  {id:"m78",g:"R32",home:"Costa de Marfil",away:"Noruega",date:"2026-06-30",datetime:"2026-06-30T12:00:00-05:00",label:"Jun 30"},
+  {id:"m79",g:"R32",home:"México",away:"Ecuador",date:"2026-06-30",datetime:"2026-06-30T22:00:00-05:00",label:"Jun 30"},
+  {id:"m80",g:"R32",home:"Inglaterra",away:"DR Congo",date:"2026-07-01",datetime:"2026-07-01T11:00:00-05:00",label:"Jul 01"},
+  {id:"m81",g:"R32",home:"Estados Unidos",away:"Bosnia-Herz.",date:"2026-07-01",datetime:"2026-07-01T19:00:00-05:00",label:"Jul 01"},
+  {id:"m82",g:"R32",home:"Bélgica",away:"Senegal",date:"2026-07-01",datetime:"2026-07-01T15:00:00-05:00",label:"Jul 01"},
+  {id:"m83",g:"R32",home:"Portugal",away:"Croacia",date:"2026-07-02",datetime:"2026-07-02T18:00:00-05:00",label:"Jul 02"},
+  {id:"m84",g:"R32",home:"España",away:"Austria",date:"2026-07-02",datetime:"2026-07-02T14:00:00-05:00",label:"Jul 02"},
+  {id:"m85",g:"R32",home:"Suiza",away:"Argelia",date:"2026-07-02",datetime:"2026-07-02T22:00:00-05:00",label:"Jul 02"},
+  {id:"m86",g:"R32",home:"Argentina",away:"Cabo Verde",date:"2026-07-03",datetime:"2026-07-03T17:00:00-05:00",label:"Jul 03"},
+  {id:"m87",g:"R32",home:"Colombia",away:"Ghana",date:"2026-07-03",datetime:"2026-07-03T20:30:00-05:00",label:"Jul 03"},
+  {id:"m88",g:"R32",home:"Australia",away:"Egipto",date:"2026-07-03",datetime:"2026-07-03T13:00:00-05:00",label:"Jul 03"}
 );
 
 // Round of 16 (m89 - m96)
