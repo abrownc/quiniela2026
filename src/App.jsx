@@ -131,7 +131,7 @@ MATCHES.push(
   {id:"m76",g:"R32",home:"Brasil",away:"Japón",date:"2026-06-29",datetime:"2026-06-29T12:00:00-05:00",label:"Jun 29"},
   {id:"m77",g:"R32",home:"Francia",away:"Suecia",date:"2026-06-30",datetime:"2026-06-30T16:00:00-05:00",label:"Jun 30"},
   {id:"m78",g:"R32",home:"Costa de Marfil",away:"Noruega",date:"2026-06-30",datetime:"2026-06-30T12:00:00-05:00",label:"Jun 30"},
-  {id:"m79",g:"R32",home:"México",away:"Ecuador",date:"2026-06-30",datetime:"2026-06-30T22:00:00-05:00",label:"Jun 30"},
+  {id:"m79",g:"R32",home:"México",away:"Ecuador",date:"2026-06-30",datetime:"2026-06-30T20:00:00-05:00",label:"Jun 30"},
   {id:"m80",g:"R32",home:"Inglaterra",away:"DR Congo",date:"2026-07-01",datetime:"2026-07-01T11:00:00-05:00",label:"Jul 01"},
   {id:"m81",g:"R32",home:"Estados Unidos",away:"Bosnia-Herz.",date:"2026-07-01",datetime:"2026-07-01T19:00:00-05:00",label:"Jul 01"},
   {id:"m82",g:"R32",home:"Bélgica",away:"Senegal",date:"2026-07-01",datetime:"2026-07-01T15:00:00-05:00",label:"Jul 01"},
