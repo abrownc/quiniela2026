@@ -261,6 +261,8 @@ const S={
   lbl:{fontSize:11,color:"#8b949e",fontWeight:600,display:"block",marginBottom:5,textTransform:"uppercase",letterSpacing:0.8},
 };
 
+// When true, extras UI is read-only for all users (prevents any changes)
+const EXTRAS_LOCKED = true;
 /**
  * `PtsBadge` - small visual component that renders a colored badge for points.
  * - `pts` can be 0,1,2,3 or null. Null renders nothing.
@@ -690,7 +692,7 @@ Only include confirmed final scores.` }]
               ].map(({key,label,options})=>(
                 <div key={key}>
                   <label style={S.lbl}>{label}</label>
-                  <select style={S.sel} value={extras[key]||""} onChange={e=>saveExtras({...extras,[key]:e.target.value})}>
+                  <select style={S.sel} value={extras[key]||""} disabled={EXTRAS_LOCKED} onChange={e=>{ if(EXTRAS_LOCKED) return; saveExtras({...extras,[key]:e.target.value}) }}>
                     <option value="">Selecciona...</option>
                     {options.map(o=><option key={o}>{o}</option>)}
                   </select>
@@ -702,7 +704,7 @@ Only include confirmed final scores.` }]
                   {Object.entries(GROUPS).map(([letter,teams])=>(
                     <div key={letter} style={{display:"flex",alignItems:"center",gap:5}}>
                       <span style={{color:"#8b949e",fontSize:10,fontWeight:700,width:20}}>G-{letter}</span>
-                      <select style={{...S.sel,fontSize:11,padding:"5px 7px"}} value={(extras.group_winners||{})[letter]||""} onChange={e=>saveExtras({...extras,group_winners:{...(extras.group_winners||{}),[letter]:e.target.value}})}>
+                      <select style={{...S.sel,fontSize:11,padding:"5px 7px"}} value={(extras.group_winners||{})[letter]||""} disabled={EXTRAS_LOCKED} onChange={e=>{ if(EXTRAS_LOCKED) return; saveExtras({...extras,group_winners:{...(extras.group_winners||{}),[letter]:e.target.value}}) }}>
                         <option value="">—</option>
                         {teams.map(t=><option key={t}>{t}</option>)}
                       </select>
